@@ -18,17 +18,51 @@ public class StringCalculatorTest {
     }
 
     @Test
-    public void shouldReturn0WhenPassedStringIsEmpty()  {
-        assertEquals("String is empty",0,stringCalculator.add(""));
+    public void shouldReturn0WhenPassedStringIsEmpty() {
+        assertEquals("String is empty", 0, stringCalculator.add(""));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void shouldThrowNullPointerExceptionWhenPassedStringIsNull() {
+        stringCalculator.add(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentExceptionWhenPassedStringIsNotANumber() {
+        stringCalculator.add("X");
+        stringCalculator.add("1,s,3");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentExceptionWhenPassedStringHasCommaAsAFirstCharacter() {
+        stringCalculator.add(",1,2,3");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentExceptionWhenPassedStringHasDuplicatedCommas() {
+        stringCalculator.add("1,,3");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentExceptionWhenPassedStringHasCommaAsALastCharacter() {
+        stringCalculator.add("1,2,3,");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentExceptionWhenPassedStringHasWhiteSpaces() {
+        stringCalculator.add("1,2, 3");
+    }
+
+
+    @Test
+    public void shouldReturnTheSameNumberWhenItWasOnlyNOneNumberPassed() {
+        assertEquals(3,stringCalculator.add("3"));
     }
 
     @Test
-    public void shouldReturn1WhenPassedStringIsNotEmpty() {
-        assertEquals("String is Not Empty", 1, stringCalculator.add("1,x,1"));
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void shouldThrowRuntimeExceptionWhenPassedStringIsNotNumber() {
-        stringCalculator.add("X");
+    public void shouldReturnSumOfEveryAmountOfNumbers() {
+        assertEquals(3+2,stringCalculator.add("3,2"));
+        assertEquals(3+2+6+10,stringCalculator.add("3,2,6,10"));
+        assertEquals(3+2+6+10+100,stringCalculator.add("3,2,6,10,100"));
     }
 }
