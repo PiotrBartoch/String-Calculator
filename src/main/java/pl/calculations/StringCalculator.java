@@ -1,37 +1,34 @@
 package pl.calculations;
 
-/**
- * Created by Piotrek on 14.03.2017.
- */
-public class StringCalculator {
+import java.util.List;
 
-    public static int add(String string) {
+import static java.util.stream.Collectors.joining;
+
+class StringCalculator {
+
+    int add(String string) {
         if (string.isEmpty()) {
             return 0;
         }
-        String[] arrayOfNumbers = Separator.getNumbers(string);
-        checkForNegativeNumbers(arrayOfNumbers);
-        return sumArray(arrayOfNumbers);
+        Separator separator = new Separator();
+        List<String> numbersList = separator.getNumbers(string);
+        checkForNegativeNumbers(numbersList);
+        return sumArray(numbersList);
     }
 
-    private static void checkForNegativeNumbers(String[] arrayOfNumbers) {
-        String negatives = "";
-        for (String number : arrayOfNumbers) {
-            if (number.contains("-"))
-                negatives += "," + number;
+    private void checkForNegativeNumbers(List<String> numbersList) {
+        String negatives = numbersList.stream()
+                .filter(s -> s.contains("-"))
+                .collect(joining(","));
+        if (!negatives.isEmpty()) {
+            throw new IllegalArgumentException("Negatives not allowed: " + negatives);
         }
-        if (!negatives.isEmpty())
-            throw new IllegalArgumentException("Negatives not allowed: " + negatives.substring(1)); // index:0 is comma
     }
 
-    private static int sumArray(String[] arrayOfNumbers) {
-        int sum = 0;
-        int parsedNumber;
-        for (String number : arrayOfNumbers) {
-            parsedNumber = Integer.parseInt(number);
-            if (parsedNumber <= 1000)
-                sum += parsedNumber;
-        }
-        return sum;
+    private int sumArray(List<String> numbersList) {
+        return numbersList.stream()
+                .filter(s -> Integer.parseInt(s) <= 1000)
+                .mapToInt(Integer::parseInt)
+                .sum();
     }
 }
